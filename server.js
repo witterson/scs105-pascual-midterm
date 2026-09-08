@@ -6,13 +6,14 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 const db = mysql.createConnection({
     host: 'sql.freedb.tech',
-    user: 'u_6SC1N4',
+    user: 'u_6SClN4',
     password: 'eMHRxPrUmixp', 
     database: 'freedb_GzQcXbjd',
-    port: 3306
+    port: 3306,
 });
 
 db.connect((err) => {
@@ -23,10 +24,17 @@ db.connect((err) => {
     console.log('Connected to FreeDB');
 });
 
+// CONNECTION TESTER
+db.query('SELECT 1', (err) => {
+    if(err) console.log('DB Ping Error', err);
+    else console.log('DB Ping Okay');
+});
+
 
 
 // CREATE
 app.post('/api/students', (req, res) => {
+    console.log("Sending data", req.body);
     const { student_id, full_name, course, year_level, email_address, contact_number } = req.body;
     const sql = 'INSERT INTO students (student_id, full_name, course, year_level, email_address, contact_number) VALUES (?, ?, ?, ?, ?, ?)';
     db.query(sql, [student_id, full_name, course, year_level, email_address, contact_number], (err, result) => {
